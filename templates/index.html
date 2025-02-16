@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Footprint Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>🌍 Carbon Footprint Calculator</h2>
+
+    <label>Car Travel (km per day):</label>
+    <input type="number" id="car_km"><br>
+
+    <label>Bus Travel (km per day):</label>
+    <input type="number" id="bus_km"><br>
+
+    <label>Electricity Usage (kWh per month):</label>
+    <input type="number" id="electricity_kwh"><br>
+
+    <label>Beef Consumption (kg per month):</label>
+    <input type="number" id="beef_kg"><br>
+
+    <button onclick="calculateFootprint()">Calculate</button>
+
+    <h3>Your Carbon Footprint: <span id="result">0</span> kg CO₂</h3>
+
+    <script>
+        async function calculateFootprint() {
+            let data = {
+                car_km: parseFloat(document.getElementById("car_km").value) || 0,
+                bus_km: parseFloat(document.getElementById("bus_km").value) || 0,
+                electricity_kwh: parseFloat(document.getElementById("electricity_kwh").value) || 0,
+                beef_kg: parseFloat(document.getElementById("beef_kg").value) || 0
+            };
+
+            let response = await fetch("/calculate", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            });
+
+            let result = await response.json();
+            document.getElementById("result").innerText = result.total_emissions.toFixed(2);
+        }
+    </script>
+</body>
+</html>
